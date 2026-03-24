@@ -48,7 +48,11 @@ export const barberShopService = pgTable(
     name: text("name").notNull(),
     description: text("description"),
     imageUrl: text("image-url"),
-    price: numeric("price", { precision: 10, scale: 2 }),
+    price: numeric("price", {
+      precision: 10,
+      scale: 2,
+      mode: "number",
+    }).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
