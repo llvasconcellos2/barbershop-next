@@ -26,7 +26,7 @@ export const usersRelations = relations(user, ({ many }) => ({
 export const barberShop = pgTable("barber-shop", {
   id: uuid("id").primaryKey().notNull().defaultRandom(),
   name: text("name").notNull(),
-  address: text("address").notNull().unique(),
+  address: text("address").notNull(),
   phones: text("phones").array(),
   description: text("description"),
   imageUrl: text("image-url"),
