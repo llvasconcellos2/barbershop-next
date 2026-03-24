@@ -1,0 +1,10 @@
+# Ignore artifacts:
+build
+coverage
+
+# Next.js specific
+.next
+out
+
+# Ignore dependencies
+node_modules

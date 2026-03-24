@@ -1,0 +1,10 @@
+{
+  "$schema": "https://www.schemastore.org/prettierrc.json",
+  "singleQuote": true,
+  "bracketSameLine": true,
+  "checkIgnorePragma": true,
+  "experimentalTernaries": true,
+  "jsxSingleQuote": true,
+  "printWidth": 100,
+  "plugins": ["prettier-plugin-tailwindcss"]
+}
