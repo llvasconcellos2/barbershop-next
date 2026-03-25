@@ -11,7 +11,7 @@ export default function Home() {
     <div className='flex flex-col gap-6 p-5'>
       <HomeHeader />
       <Search />
-      <FastSearchBar />
+      <QuickSearchBar />
       <Banner />
       <Bookings />
       <BarberShops sort={BarberShopSort.Recommended} />
@@ -40,38 +40,53 @@ function Search() {
   );
 }
 
-function FastSearchBar() {
+type QuickSearchOption = {
+  imageUrl: string;
+  name: string;
+};
+
+function QuickSearchBar() {
+  const options: QuickSearchOption[] = [
+    {
+      imageUrl: '/haircut.svg',
+      name: 'Haircut',
+    },
+    {
+      imageUrl: '/beard.svg',
+      name: 'Beard',
+    },
+    {
+      imageUrl: '/finish.svg',
+      name: 'Finish',
+    },
+    {
+      imageUrl: '/eyebrows.svg',
+      name: 'Eyebrows',
+    },
+    {
+      imageUrl: '/hydration.svg',
+      name: 'Hydration',
+    },
+    {
+      imageUrl: '/massage.svg',
+      name: 'Massage',
+    },
+  ];
+
   return (
     <div className='flex gap-3 overflow-auto [&::-webkit-scrollbar]:hidden'>
-      <Button variant='outline' className='p-4'>
-        <Image src='/haircut.svg' width={16} height={16} alt='Haircut' />
-        Haircut
-      </Button>
-
-      <Button variant='outline' className='p-4'>
-        <Image src='/beard.svg' width={16} height={16} alt='Beard' />
-        Beard
-      </Button>
-
-      <Button variant='outline' className='p-4'>
-        <Image src='/Finish.svg' width={16} height={16} alt='Finish' />
-        Finish
-      </Button>
-
-      <Button variant='outline' className='p-4'>
-        <Image src='/eyebrows.svg' width={16} height={16} alt='Eyebrows' />
-        Eyebrows
-      </Button>
-
-      <Button variant='outline' className='p-4'>
-        <Image src='/hydration.svg' width={16} height={16} alt='Hydration' />
-        Hydration
-      </Button>
-
-      <Button variant='outline' className='p-4'>
-        <Image src='/massage.svg' width={16} height={16} alt='Massage' />
-        Massage
-      </Button>
+      {options.map((option) => (
+        <QuickSearchBarItem option={option} key={option.name} />
+      ))}
     </div>
+  );
+}
+
+function QuickSearchBarItem({ option }: { option: QuickSearchOption }) {
+  return (
+    <Button variant='outline' className='p-4'>
+      <Image src={option.imageUrl} width={16} height={16} alt={option.name} />
+      {option.name}
+    </Button>
   );
 }
