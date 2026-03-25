@@ -28,7 +28,7 @@ export default function BarberShopItem({ barberShop }: { barberShop: BarberShop 
         <h3 className='truncate font-semibold'>{barberShop.name}</h3>
         <p className='truncate text-sm text-gray-400'>{barberShop.address}</p>
         <Button variant='secondary' className='mt-1 w-full' asChild>
-          <Link href={`/barbershops/${barberShop.id}`}>Reservar</Link>
+          <Link href={`/barbershops/${barberShop.id}`}>Book</Link>
         </Button>
       </CardContent>
     </Card>
