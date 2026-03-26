@@ -3,6 +3,7 @@ import BarberShops, { BarberShopSort } from '@/components/barber-shops';
 import Bookings from '@/components/bookings';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { QuickSearchOption, QUICKSEARCHOPTIONS } from '@/lib/quick-search-options';
 import { SearchIcon } from 'lucide-react';
 import Image from 'next/image';
 
@@ -40,42 +41,10 @@ function Search() {
   );
 }
 
-type QuickSearchOption = {
-  imageUrl: string;
-  name: string;
-};
-
 function QuickSearchBar() {
-  const options: QuickSearchOption[] = [
-    {
-      imageUrl: '/haircut.svg',
-      name: 'Haircut',
-    },
-    {
-      imageUrl: '/beard.svg',
-      name: 'Beard',
-    },
-    {
-      imageUrl: '/finish.svg',
-      name: 'Finish',
-    },
-    {
-      imageUrl: '/eyebrows.svg',
-      name: 'Eyebrows',
-    },
-    {
-      imageUrl: '/hydration.svg',
-      name: 'Hydration',
-    },
-    {
-      imageUrl: '/massage.svg',
-      name: 'Massage',
-    },
-  ];
-
   return (
     <div className='flex gap-3 overflow-auto [&::-webkit-scrollbar]:hidden'>
-      {options.map((option) => (
+      {QUICKSEARCHOPTIONS.map((option) => (
         <QuickSearchBarItem option={option} key={option.name} />
       ))}
     </div>

@@ -1,10 +1,10 @@
 import Image from 'next/image';
 import { Card, CardContent } from './ui/card';
-import { Button } from './ui/button';
-import { MenuIcon } from 'lucide-react';
+
 import Link from 'next/link';
 import BackButton from './backbutton';
 import { headers } from 'next/headers';
+import Menu from './menu';
 
 export default async function Header() {
   const headersList = await headers();
@@ -26,9 +26,7 @@ export default async function Header() {
               />
             </Link>
           </div>
-          <Button size='icon' variant='outline'>
-            <MenuIcon />
-          </Button>
+          <Menu />
         </CardContent>
       </Card>
     </header>
