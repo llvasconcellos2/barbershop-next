@@ -38,7 +38,7 @@ export default function RootLayout({
         'font-sans',
         inter.variable,
       )}>
-      <body className='dark'>
+      <body className='dark m-0 flex min-h-screen flex-col'>
         <Header />
         {children}
         <Footer />
