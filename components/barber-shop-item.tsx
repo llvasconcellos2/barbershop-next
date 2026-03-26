@@ -20,7 +20,7 @@ export default function BarberShopItem({ barberShop }: { barberShop: BarberShop 
         </div>
         <h3 className='truncate font-semibold'>{barberShop.name}</h3>
         <p className='truncate text-sm text-gray-400'>{barberShop.address}</p>
-        <Button variant='secondary' className='mt-1 w-full' asChild>
+        <Button variant='secondaryCustom' className='mt-1 w-full' asChild>
           <Link href={`/barbershop/${barberShop.id}`}>Book</Link>
         </Button>
       </CardContent>

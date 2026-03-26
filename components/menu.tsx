@@ -55,7 +55,7 @@ export default function Menu() {
         </div>
         <div className='flex flex-col gap-2 border-b border-solid p-5'>
           {QUICKSEARCHOPTIONS.map((option) => (
-            <QuickSearchBarItem option={option} key={option.name} />
+            <QuickSearchMenuItem option={option} key={option.name} />
           ))}
         </div>
         <div className='flex flex-col gap-2 border-b border-solid p-5'>
@@ -69,9 +69,9 @@ export default function Menu() {
   );
 }
 
-function QuickSearchBarItem({ option }: { option: QuickSearchOption }) {
+function QuickSearchMenuItem({ option }: { option: QuickSearchOption }) {
   return (
-    <Button variant='ghost' className='justify-start gap-2'>
+    <Button variant='ghostCustom' className='justify-start gap-2'>
       <Image src={option.imageUrl} width={18} height={18} alt={option.name} />
       {option.name}
     </Button>
