@@ -53,7 +53,7 @@ function QuickSearchBar() {
 
 function QuickSearchBarItem({ option }: { option: QuickSearchOption }) {
   return (
-    <Button variant='outline' className='p-4'>
+    <Button variant='outlineCustom' className='p-4'>
       <Image src={option.imageUrl} width={16} height={16} alt={option.name} />
       {option.name}
     </Button>
