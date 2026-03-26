@@ -1,6 +1,14 @@
 'use client';
 
-import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from './ui/sheet';
 import { Button } from './ui/button';
 import { Calendar1Icon, HomeIcon, LogOutIcon, MenuIcon } from 'lucide-react';
 import { QuickSearchOption, QUICKSEARCHOPTIONS } from '@/lib/quick-search-options';
@@ -20,6 +28,7 @@ export default function Menu() {
         <SheetHeader>
           <SheetTitle>Menu</SheetTitle>
         </SheetHeader>
+        <SheetDescription style={{ display: 'none' }}>Menu Options</SheetDescription>
         <div className='flex items-center gap-3 border-b border-solid px-5 pb-4'>
           <Avatar size='lg' className='border-primary border-3'>
             <AvatarImage src='/leo.png' alt='Barber Avatar' />
