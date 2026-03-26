@@ -16,7 +16,7 @@ export const usersRelations = relations(userTable, ({ many }) => ({
   bookings: many(bookingTable),
 }));
 
-export type User = typeof userTable.$inferSelect;
+export type User = typeof userTable.$inferSelect & { bookings: Booking[] };
 
 export const barberShopTable = pgTable('barber-shop', {
   id: uuid('id').primaryKey().notNull().defaultRandom(),
@@ -36,7 +36,9 @@ export const barberShopRelations = relations(barberShopTable, ({ many }) => ({
   barberShopServices: many(barberShopServiceTable),
 }));
 
-export type BarberShop = typeof barberShopTable.$inferSelect;
+export type BarberShop = typeof barberShopTable.$inferSelect & {
+  barberShopServices: BarberShopService[];
+};
 
 export const barberShopServiceTable = pgTable(
   'barber-shop-service',

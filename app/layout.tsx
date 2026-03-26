@@ -4,6 +4,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+import { Toaster } from '@/components/ui/sonner';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -40,7 +41,8 @@ export default function RootLayout({
       )}>
       <body className='dark m-0 flex min-h-screen flex-col'>
         <Header />
-        {children}
+        <main>{children}</main>
+        <Toaster />
         <Footer />
       </body>
     </html>
