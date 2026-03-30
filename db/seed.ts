@@ -107,7 +107,7 @@ async function seedDatabase() {
       const imageUrl = images[i];
 
       const barberShop = await db
-        .insert(schema.barberShopTable)
+        .insert(schema.barberShops)
         .values({
           name,
           address,
@@ -116,10 +116,10 @@ async function seedDatabase() {
           description:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ac augue ullamcorper, pharetra orci mollis, auctor tellus. Phasellus pharetra erat ac libero efficitur tempus. Donec pretium convallis iaculis. Etiam eu felis sollicitudin, cursus mi vitae, iaculis magna. Nam non erat neque. In hac habitasse platea dictumst. Pellentesque molestie accumsan tellus id laoreet.',
         })
-        .returning({ id: schema.barberShopTable.id });
+        .returning({ id: schema.barberShops.id });
 
       for (const service of services) {
-        await db.insert(schema.barberShopServiceTable).values({
+        await db.insert(schema.barberShopServices).values({
           name: service.name,
           description: service.description,
           price: service.price,
@@ -135,4 +135,4 @@ async function seedDatabase() {
 }
 
 seedDatabase();
-schema.barberShopServiceTable.price;
+schema.barberShopServices.price;

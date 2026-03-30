@@ -1,6 +1,5 @@
 import { db } from '@/db';
 import BarberShopItem from './barber-shop-item';
-import { barberShopTable } from '@/db/schema';
 
 export enum BarberShopSort {
   Popular,
@@ -8,7 +7,11 @@ export enum BarberShopSort {
 }
 
 export default async function BarberShops({ sort }: { sort: BarberShopSort }) {
-  let barberShops = await db.select().from(barberShopTable).orderBy(barberShopTable.name);
+  let barberShops = await db.query.barberShops.findMany({
+    with: {
+      barberShopServices: true,
+    },
+  });
   let title = '';
   if (BarberShopSort.Popular === sort) {
     title = 'POPULAR';

@@ -1,17 +1,16 @@
 import { db } from '@/db';
-import { BarberShop } from '@/db/schema';
+import { BarberShopWithServices } from '@/db/schema';
 import { notFound } from 'next/navigation';
 import BarberShopImage from '@/components/barber-shop-image';
 import { MapPinIcon, PhoneIcon, StarIcon } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import BarberShopServiceItem from '@/components/barber-shop-service-item';
-import { Button } from '@/components/ui/button';
 import CopyPhoneButton from '@/components/copy-phone-button';
 
 export default async function BarberShopPage({ params }: { params: { id: string } }) {
   const { id: barberShopId } = await params;
   try {
-    const barberShop = await db.query.barberShopTable.findFirst({
+    const barberShop = await db.query.barberShops.findFirst({
       where(fields, operators) {
         return operators.eq(fields.id, barberShopId);
       },
@@ -26,7 +25,7 @@ export default async function BarberShopPage({ params }: { params: { id: string 
   }
 }
 
-function BarberShopComponent({ barberShop }: { barberShop: BarberShop }) {
+function BarberShopComponent({ barberShop }: { barberShop: BarberShopWithServices }) {
   return (
     <div className='flex flex-1 flex-col gap-2'>
       <div className='relative aspect-video h-87.5 w-full'>
