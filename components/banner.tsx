@@ -8,6 +8,7 @@ export default function Banner() {
         alt='Banner do BarberShop'
         fill
         className='rounded-xl object-cover'
+        loading='eager'
       />
     </div>
   );

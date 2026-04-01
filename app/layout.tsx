@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { Toaster } from '@/components/ui/sonner';
+import AuthProvider from '@/providers/auth';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -40,10 +41,12 @@ export default function RootLayout({
         inter.variable,
       )}>
       <body className='dark m-0 flex min-h-screen flex-col'>
-        <Header />
-        <main>{children}</main>
-        <Toaster />
-        <Footer />
+        <AuthProvider>
+          <Header />
+          <main>{children}</main>
+          <Toaster />
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );
