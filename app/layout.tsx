@@ -43,7 +43,7 @@ export default function RootLayout({
       <body className='dark m-0 flex min-h-screen flex-col'>
         <AuthProvider>
           <Header />
-          <main>{children}</main>
+          <main className='flex-1'>{children}</main>
           <Toaster />
           <Footer />
         </AuthProvider>

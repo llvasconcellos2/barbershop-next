@@ -1,10 +1,9 @@
 import Banner from '@/components/banner';
 import BarberShops, { BarberShopSort } from '@/components/barber-shops';
 import Bookings from '@/components/bookings';
+import Search from '@/components/search';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { QuickSearchOption, QUICKSEARCHOPTIONS } from '@/lib/quick-search-options';
-import { SearchIcon } from 'lucide-react';
 import Image from 'next/image';
 
 export default function Home() {
@@ -26,17 +25,6 @@ function HomeHeader() {
     <div>
       <h2 className='text-xl font-bold'>Hello, Leonardo</h2>
       <p>Segunda-feira, 24 de Março de 2026</p>
-    </div>
-  );
-}
-
-function Search() {
-  return (
-    <div className='flex items-center gap-2'>
-      <Input placeholder='Search...' />
-      <Button>
-        <SearchIcon />
-      </Button>
     </div>
   );
 }

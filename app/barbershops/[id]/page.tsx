@@ -27,7 +27,7 @@ export default async function BarberShopPage({ params }: { params: { id: string 
 
 function BarberShopComponent({ barberShop }: { barberShop: BarberShopWithServices }) {
   return (
-    <div className='flex flex-1 flex-col gap-2'>
+    <div className='flex flex-col gap-2'>
       <div className='relative aspect-video h-87.5 w-full'>
         <BarberShopImage barberShop={barberShop} />
       </div>
