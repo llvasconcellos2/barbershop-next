@@ -5,6 +5,7 @@ import Search from '@/components/search';
 import { Button } from '@/components/ui/button';
 import { QuickSearchOption, QUICKSEARCHOPTIONS } from '@/lib/quick-search-options';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -41,9 +42,11 @@ function QuickSearchBar() {
 
 function QuickSearchBarItem({ option }: { option: QuickSearchOption }) {
   return (
-    <Button variant='outlineCustom' className='p-4'>
-      <Image src={option.imageUrl} width={16} height={16} alt={option.name} />
-      {option.name}
+    <Button variant='outlineCustom' className='p-4' asChild>
+      <Link href={`/barbershops/?s=${option.name}`}>
+        <Image src={option.imageUrl} width={16} height={16} alt={option.name} />
+        {option.name}
+      </Link>
     </Button>
   );
 }

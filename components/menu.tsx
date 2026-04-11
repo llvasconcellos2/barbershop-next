@@ -24,9 +24,17 @@ import {
   DialogTrigger,
 } from './ui/dialog';
 import { signIn, signOut, useSession } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 
 export default function Menu() {
   const { data: session } = useSession();
+
+  const searchParams = useSearchParams();
+
+  // Get a specific param: /dashboard?query=react -> 'react'
+  const q = searchParams.get('q');
+  const s = searchParams.get('s');
+
   const handleLogin = async () => await signIn('google');
   const handleLogout = async () => await signOut();
 
@@ -81,21 +89,28 @@ export default function Menu() {
         </div>
         <div className='flex flex-col gap-2 border-b border-solid p-5'>
           <SheetClose asChild>
-            <Button className='justify-start gap-2' asChild>
+            <Button
+              className='justify-start gap-2'
+              asChild
+              variant={q || s ? 'ghostCustom' : 'default'}>
               <Link href={`/`}>
                 <HomeIcon />
                 Home
               </Link>
             </Button>
           </SheetClose>
-          <Button className='justify-start gap-2' variant='ghost'>
+          <Button className='justify-start gap-2' variant='ghostCustom'>
             <Calendar1Icon />
             Bookings
           </Button>
         </div>
         <div className='flex flex-col gap-2 border-b border-solid p-5'>
           {QUICKSEARCHOPTIONS.map((option) => (
-            <QuickSearchMenuItem option={option} key={option.name} />
+            <QuickSearchMenuItem
+              option={option}
+              key={option.name}
+              variant={s === option.name ? 'default' : 'ghostCustom'}
+            />
           ))}
         </div>
         <div className='flex flex-col gap-2 border-b border-solid p-5'>
@@ -109,11 +124,21 @@ export default function Menu() {
   );
 }
 
-function QuickSearchMenuItem({ option }: { option: QuickSearchOption }) {
+function QuickSearchMenuItem({
+  option,
+  variant,
+}: {
+  option: QuickSearchOption;
+  variant: 'ghostCustom' | 'default';
+}) {
   return (
-    <Button variant='ghostCustom' className='justify-start gap-2'>
-      <Image src={option.imageUrl} width={18} height={18} alt={option.name} />
-      {option.name}
-    </Button>
+    <SheetClose asChild>
+      <Button variant={variant} className='justify-start gap-2' asChild>
+        <Link href={`/barbershops/?s=${option.name}`}>
+          <Image src={option.imageUrl} width={18} height={18} alt={option.name} />
+          {option.name}
+        </Link>
+      </Button>
+    </SheetClose>
   );
 }
