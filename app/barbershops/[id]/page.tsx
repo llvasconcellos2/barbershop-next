@@ -47,7 +47,7 @@ function BarberShopComponent({ barberShop }: { barberShop: BarberShopWithService
         <Separator />
         <h2 className='text-xs font-bold text-gray-400 uppercase'>SERVICES</h2>
         {barberShop.barberShopServices.map((service) => (
-          <BarberShopServiceItem service={service} key={service.id} />
+          <BarberShopServiceItem barberShop={barberShop} service={service} key={service.id} />
         ))}
         <Separator />
         {barberShop.phones?.map((phone, index) => (
