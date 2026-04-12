@@ -23,7 +23,6 @@ import { createBooking } from '@/app/barbershops/[id]/actions';
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
 import LoginDialog from './login-dialog';
-import { LogInIcon } from 'lucide-react';
 
 export default function BarberShopServiceItem({
   barberShop,
@@ -103,8 +102,12 @@ function ServiceBooking({
     setTimeSlots(getDayTimeSlots(date, 45));
   }
 
-  function onSelectTime(time: Date | undefined) {
-    setBook(time);
+  function onSelectTime(time: Date) {
+    if (time.getTime() == book?.getTime()) {
+      setBook(undefined);
+    } else {
+      setBook(time);
+    }
   }
 
   async function confirmBooking() {
@@ -157,13 +160,14 @@ function ServiceBooking({
           </div>
           {book && <BookingInfo barberShop={barberShop} service={service} book={book} />}
         </div>
-        {book && (
-          <SheetFooter>
-            <SheetClose asChild>
-              <Button onClick={confirmBooking}>Confirm Your Booking</Button>
-            </SheetClose>
-          </SheetFooter>
-        )}
+
+        <SheetFooter>
+          <SheetClose asChild>
+            <Button disabled={!book} onClick={confirmBooking}>
+              {book ? 'Confirm Your Booking' : 'Select Time to Book'}
+            </Button>
+          </SheetClose>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   );
