@@ -15,27 +15,18 @@ import { QuickSearchOption, QUICKSEARCHOPTIONS } from '@/lib/quick-search-option
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import Link from 'next/link';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from './ui/dialog';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
+import LoginDialog from './login-dialog';
 
 export default function Menu() {
   const { data: session } = useSession();
 
   const searchParams = useSearchParams();
 
-  // Get a specific param: /dashboard?query=react -> 'react'
   const q = searchParams.get('q');
   const s = searchParams.get('s');
 
-  const handleLogin = async () => await signIn('google');
   const handleLogout = async () => await signOut();
 
   return (
@@ -64,27 +55,16 @@ export default function Menu() {
                 <p className='text-xs'>{session.user.email}</p>
               </div>
             </>
-          : <Dialog>
-              <DialogTrigger asChild>
-                <Button
-                  variant='ghostCustom'
-                  className='hover:bg-primary/30! flex w-full items-center justify-between bg-transparent! px-2 py-5'>
-                  <h2>Log into your account</h2>
-                  <div className='bg-primary rounded-md p-1.5'>
-                    <LogInIcon size={18} />
-                  </div>
-                </Button>
-              </DialogTrigger>
-              <DialogContent className='w-[80%]'>
-                <DialogHeader>
-                  <DialogTitle>Log Into Your Account</DialogTitle>
-                  <DialogDescription>Connect using your Google Account.</DialogDescription>
-                </DialogHeader>
-                <Button variant='outlineCustom' className='gap-2' onClick={handleLogin}>
-                  <Image src='/google.svg' width={18} height={18} alt='Google Color Icon' /> Google
-                </Button>
-              </DialogContent>
-            </Dialog>
+          : <LoginDialog>
+              <Button
+                variant='ghostCustom'
+                className='hover:bg-primary/30! flex w-full items-center justify-between bg-transparent! px-2 py-5'>
+                <h2>Log into your account</h2>
+                <div className='bg-primary rounded-md p-1.5'>
+                  <LogInIcon size={18} />
+                </div>
+              </Button>
+            </LoginDialog>
           }
         </div>
         <div className='flex flex-col gap-2 border-b border-solid p-5'>
@@ -113,12 +93,14 @@ export default function Menu() {
             />
           ))}
         </div>
-        <div className='flex flex-col gap-2 border-b border-solid p-5'>
-          <Button variant='secondary' className='gap-2' onClick={handleLogout}>
-            <LogOutIcon />
-            Log Out
-          </Button>
-        </div>
+        {session?.user && (
+          <div className='flex flex-col gap-2 border-b border-solid p-5'>
+            <Button variant='secondary' className='gap-2' onClick={handleLogout}>
+              <LogOutIcon />
+              Log Out
+            </Button>
+          </div>
+        )}
       </SheetContent>
     </Sheet>
   );

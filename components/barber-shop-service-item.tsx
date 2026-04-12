@@ -21,6 +21,9 @@ import { useState } from 'react';
 import { getDayTimeSlots } from '@/lib/utils';
 import { createBooking } from '@/app/barbershops/[id]/actions';
 import { toast } from 'sonner';
+import { useSession } from 'next-auth/react';
+import LoginDialog from './login-dialog';
+import { LogInIcon } from 'lucide-react';
 
 export default function BarberShopServiceItem({
   barberShop,
@@ -29,6 +32,8 @@ export default function BarberShopServiceItem({
   barberShop: BarberShop;
   service: BarberShopService;
 }) {
+  const { data: session } = useSession();
+
   return (
     <>
       <Card className='mb-2'>
@@ -63,8 +68,14 @@ export default function BarberShopServiceItem({
                   service.price,
                 )}
               </p>
-
-              <ServiceBooking barberShop={barberShop} service={service} />
+              {session?.user ?
+                <ServiceBooking barberShop={barberShop} service={service} />
+              : <LoginDialog>
+                  <Button variant='secondary' className='px-5'>
+                    Login To Book
+                  </Button>
+                </LoginDialog>
+              }
             </div>
           </div>
         </CardContent>
@@ -81,6 +92,8 @@ function ServiceBooking({
   service: BarberShopService;
 }) {
   const [date, setDate] = useState<Date | undefined>(new Date());
+
+  // TODO: Não exibir horários já agendados
   const [timeSlots, setTimeSlots] = useState<Date[]>(getDayTimeSlots(undefined, 45));
   const [book, setBook] = useState<Date | undefined>();
 
