@@ -17,7 +17,7 @@ import {
 } from './ui/sheet';
 import { Calendar } from './ui/calendar';
 import { ptBR } from 'react-day-picker/locale';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { getDayTimeSlots } from '@/lib/utils';
 import { createBooking, getBookings } from '@/app/barbershops/[id]/actions';
 import { toast } from 'sonner';
@@ -90,20 +90,18 @@ function ServiceBooking({
   barberShop: BarberShop;
   service: BarberShopService;
 }) {
+  const [isOpen, setIsOpen] = useState(false);
   const [date, setDate] = useState<Date>(new Date());
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [timeSlots, setTimeSlots] = useState<Date[]>([]);
   const [book, setBook] = useState<Date | undefined>();
 
-  useEffect(() => {
-    async function fetchData() {
-      if (!date) return;
-      const bookings = await getBookings(service.id, date);
-      setBookings(bookings);
-      setTimeSlots(getRemainingTimeSlots(getDayTimeSlots(undefined, 45), bookings));
-    }
-    fetchData();
-  }, [date, service.id]);
+  async function fetchData() {
+    if (!date) return;
+    const bookings = await getBookings(service.id, date);
+    setBookings(bookings);
+    setTimeSlots(getRemainingTimeSlots(getDayTimeSlots(undefined, 45), bookings));
+  }
 
   function getRemainingTimeSlots(defaultTimeSlots: Date[], bookings: Booking[]): Date[] {
     return defaultTimeSlots.filter((timeSlot) => {
@@ -129,11 +127,10 @@ function ServiceBooking({
   async function confirmBooking() {
     if (!book) return;
     try {
-      const newBooking = await createBooking(service.id, book);
+      const newBooking = await createBooking(service, book);
       if (newBooking) {
         setBookings([...bookings, newBooking]);
       }
-
       toast.success('Booking confirmed!');
     } catch (error) {
       if (error instanceof Error) {
@@ -146,58 +143,63 @@ function ServiceBooking({
   }
 
   function handleSheetOpenChange(open: boolean) {
-    if (!open) {
+    if (open) {
+      fetchData();
+    } else {
       setDate(new Date());
       setBook(undefined);
     }
+    setIsOpen(open);
   }
 
   return (
-    <Sheet onOpenChange={handleSheetOpenChange}>
+    <Sheet open={isOpen} onOpenChange={handleSheetOpenChange}>
       <SheetTrigger asChild>
         <Button variant='secondary' className='px-5'>
           Book
         </Button>
       </SheetTrigger>
-      <SheetContent className='gap-0'>
-        <SheetHeader>
-          <SheetTitle>Book Your Appointment</SheetTitle>
-        </SheetHeader>
-        <SheetDescription style={{ display: 'none' }}>Barbershop Calendar</SheetDescription>
-        <div className='flex flex-col gap-3 p-5'>
-          <Calendar
-            required
-            mode='single'
-            locale={ptBR}
-            className='w-full'
-            selected={date}
-            onSelect={onSelectDate}
-            disabled={{ before: new Date() }}
-            styles={{
-              month_caption: { textTransform: 'capitalize' },
-              weekday: { textTransform: 'capitalize' },
-            }}></Calendar>
-          <div className='flex gap-3 overflow-x-auto border-t border-solid pt-3 [&::-webkit-scrollbar]:hidden'>
-            {timeSlots.map((time) => (
-              <Button
-                key={time.toString()}
-                variant={book?.getTime() === time.getTime() ? 'default' : 'outlineCustom'}
-                onClick={() => onSelectTime(time)}>
-                {time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-              </Button>
-            ))}
+      {isOpen && (
+        <SheetContent className='gap-0'>
+          <SheetHeader>
+            <SheetTitle>Book Your Appointment</SheetTitle>
+          </SheetHeader>
+          <SheetDescription style={{ display: 'none' }}>Barbershop Calendar</SheetDescription>
+          <div className='flex flex-col gap-3 p-5'>
+            <Calendar
+              required
+              mode='single'
+              locale={ptBR}
+              className='w-full'
+              selected={date}
+              onSelect={onSelectDate}
+              disabled={{ before: new Date() }}
+              styles={{
+                month_caption: { textTransform: 'capitalize' },
+                weekday: { textTransform: 'capitalize' },
+              }}></Calendar>
+            <div className='flex gap-3 overflow-x-auto border-t border-solid pt-3 [&::-webkit-scrollbar]:hidden'>
+              {timeSlots.map((time) => (
+                <Button
+                  key={time.toString()}
+                  variant={book?.getTime() === time.getTime() ? 'default' : 'outlineCustom'}
+                  onClick={() => onSelectTime(time)}>
+                  {time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                </Button>
+              ))}
+            </div>
+            {book && <BookingInfo barberShop={barberShop} service={service} book={book} />}
           </div>
-          {book && <BookingInfo barberShop={barberShop} service={service} book={book} />}
-        </div>
 
-        <SheetFooter>
-          <SheetClose asChild>
-            <Button disabled={!book} onClick={confirmBooking}>
-              {book ? 'Confirm Your Booking' : 'Select Time to Book'}
-            </Button>
-          </SheetClose>
-        </SheetFooter>
-      </SheetContent>
+          <SheetFooter>
+            <SheetClose asChild>
+              <Button disabled={!book} onClick={confirmBooking}>
+                {book ? 'Confirm Your Booking' : 'Select Time to Book'}
+              </Button>
+            </SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      )}
     </Sheet>
   );
 }
