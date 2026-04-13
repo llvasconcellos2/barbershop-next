@@ -17,9 +17,9 @@ import {
 } from './ui/sheet';
 import { Calendar } from './ui/calendar';
 import { ptBR } from 'react-day-picker/locale';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getDayTimeSlots } from '@/lib/utils';
-import { createBooking } from '@/app/barbershops/[id]/actions';
+import { createBooking, getBookings } from '@/app/barbershops/[id]/actions';
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
 import LoginDialog from './login-dialog';
@@ -90,16 +90,32 @@ function ServiceBooking({
   barberShop: BarberShop;
   service: BarberShopService;
 }) {
-  const [date, setDate] = useState<Date | undefined>(new Date());
-
-  // TODO: Não exibir horários já agendados
-  const [timeSlots, setTimeSlots] = useState<Date[]>(getDayTimeSlots(undefined, 45));
+  const [date, setDate] = useState<Date>(new Date());
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [timeSlots, setTimeSlots] = useState<Date[]>([]);
   const [book, setBook] = useState<Date | undefined>();
 
-  function onSelectDate(date: Date | undefined) {
+  useEffect(() => {
+    async function fetchData() {
+      if (!date) return;
+      const bookings = await getBookings(service.id, date);
+      setBookings(bookings);
+      setTimeSlots(getRemainingTimeSlots(getDayTimeSlots(undefined, 45), bookings));
+    }
+    fetchData();
+  }, [date, service.id]);
+
+  function getRemainingTimeSlots(defaultTimeSlots: Date[], bookings: Booking[]): Date[] {
+    return defaultTimeSlots.filter((timeSlot) => {
+      if (timeSlot.getTime() < new Date().getTime()) return;
+      const exists = bookings.some((booking) => booking.date.getTime() === timeSlot.getTime());
+      if (!exists) return timeSlot;
+    });
+  }
+
+  function onSelectDate(date: Date) {
     setDate(date);
     setBook(undefined);
-    setTimeSlots(getDayTimeSlots(date, 45));
   }
 
   function onSelectTime(time: Date) {
@@ -113,7 +129,11 @@ function ServiceBooking({
   async function confirmBooking() {
     if (!book) return;
     try {
-      await createBooking(service.id, book);
+      const newBooking = await createBooking(service.id, book);
+      if (newBooking) {
+        setBookings([...bookings, newBooking]);
+      }
+
       toast.success('Booking confirmed!');
     } catch (error) {
       if (error instanceof Error) {
@@ -125,25 +145,34 @@ function ServiceBooking({
     }
   }
 
+  function handleSheetOpenChange(open: boolean) {
+    if (!open) {
+      setDate(new Date());
+      setBook(undefined);
+    }
+  }
+
   return (
-    <Sheet>
+    <Sheet onOpenChange={handleSheetOpenChange}>
       <SheetTrigger asChild>
         <Button variant='secondary' className='px-5'>
           Book
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className='gap-0'>
         <SheetHeader>
           <SheetTitle>Book Your Appointment</SheetTitle>
         </SheetHeader>
         <SheetDescription style={{ display: 'none' }}>Barbershop Calendar</SheetDescription>
         <div className='flex flex-col gap-3 p-5'>
           <Calendar
+            required
             mode='single'
             locale={ptBR}
             className='w-full'
             selected={date}
             onSelect={onSelectDate}
+            disabled={{ before: new Date() }}
             styles={{
               month_caption: { textTransform: 'capitalize' },
               weekday: { textTransform: 'capitalize' },
