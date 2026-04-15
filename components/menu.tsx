@@ -16,12 +16,13 @@ import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import LoginDialog from './login-dialog';
 
 export default function Menu() {
   const { data: session } = useSession();
 
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const q = searchParams.get('q');
@@ -71,18 +72,27 @@ export default function Menu() {
           <SheetClose asChild>
             <Button
               className='justify-start gap-2'
-              asChild
-              variant={q || s ? 'ghostCustom' : 'default'}>
+              variant={pathname === '/' ? 'default' : 'ghostCustom'}
+              asChild>
               <Link href={`/`}>
                 <HomeIcon />
                 Home
               </Link>
             </Button>
           </SheetClose>
-          <Button className='justify-start gap-2' variant='ghostCustom'>
-            <Calendar1Icon />
-            Bookings
-          </Button>
+          {session?.user && (
+            <SheetClose asChild>
+              <Button
+                className='justify-start gap-2'
+                variant={pathname === '/bookings' ? 'default' : 'ghostCustom'}
+                asChild>
+                <Link href={`/bookings`}>
+                  <Calendar1Icon />
+                  Bookings
+                </Link>
+              </Button>
+            </SheetClose>
+          )}
         </div>
         <div className='flex flex-col gap-2 border-b border-solid p-5'>
           {QUICKSEARCHOPTIONS.map((option) => (

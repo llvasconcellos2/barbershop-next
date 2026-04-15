@@ -24,6 +24,7 @@ export const users = pgTable('user', {
     .notNull(),
 });
 
+// TODO: remove comment
 // export const users = pgTable('user', {
 //   id: text('id')
 //     .primaryKey()
@@ -97,6 +98,7 @@ export const barberShopServiceRelations = relations(barberShopServices, ({ many,
 }));
 
 export type BarberShopService = typeof barberShopServices.$inferSelect;
+export type BarberShopServiceWithBarberShop = BarberShopService & { barberShop: BarberShop };
 
 export const bookings = pgTable(
   'booking',
@@ -133,6 +135,10 @@ export const bookingRelations = relations(bookings, ({ one }) => ({
 }));
 
 export type Booking = typeof bookings.$inferSelect;
+export type BookingWithService = Booking & { barberShopService: BarberShopService };
+export type BookingWithServiceAndBarberShop = Booking & {
+  barberShopService: BarberShopServiceWithBarberShop;
+};
 
 export type AdapterAccountType = 'oauth' | 'oidc' | 'email' | 'webauthn';
 

@@ -19,7 +19,7 @@ import { Calendar } from './ui/calendar';
 import { ptBR } from 'react-day-picker/locale';
 import { useState } from 'react';
 import { getDayTimeSlots } from '@/lib/utils';
-import { createBooking, getBookings } from '@/app/barbershops/[id]/actions';
+import { createBooking, getBookingsByServiceAndDate } from '@/app/actions';
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
 import LoginDialog from './login-dialog';
@@ -96,11 +96,10 @@ function ServiceBooking({
   const [timeSlots, setTimeSlots] = useState<Date[]>([]);
   const [book, setBook] = useState<Date | undefined>();
 
-  async function fetchData() {
-    if (!date) return;
-    const bookings = await getBookings(service.id, date);
+  async function fetchData(date: Date = new Date()) {
+    const bookings = await getBookingsByServiceAndDate(service.id, date);
     setBookings(bookings);
-    setTimeSlots(getRemainingTimeSlots(getDayTimeSlots(undefined, 45), bookings));
+    setTimeSlots(getRemainingTimeSlots(getDayTimeSlots(date, 45), bookings));
   }
 
   function getRemainingTimeSlots(defaultTimeSlots: Date[], bookings: Booking[]): Date[] {
@@ -114,6 +113,7 @@ function ServiceBooking({
   function onSelectDate(date: Date) {
     setDate(date);
     setBook(undefined);
+    fetchData(date);
   }
 
   function onSelectTime(time: Date) {

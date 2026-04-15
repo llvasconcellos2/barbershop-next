@@ -1,31 +1,44 @@
 import Banner from '@/components/banner';
 import BarberShops, { BarberShopSort } from '@/components/barber-shops';
-import Bookings from '@/components/bookings';
+import BookingCard from '@/components/booking-card';
 import Search from '@/components/search';
 import { Button } from '@/components/ui/button';
 import { QuickSearchOption, QUICKSEARCHOPTIONS } from '@/lib/quick-search-options';
 import Image from 'next/image';
 import Link from 'next/link';
+import { getUpcomingUserBookings } from './actions';
+import { getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]/route';
 
-export default function Home() {
+export default async function Home() {
+  const bookings = await getUpcomingUserBookings();
+
   return (
     <div className='flex flex-col gap-6 p-5'>
       <HomeHeader />
       <Search />
       <QuickSearchBar />
       <Banner />
-      <Bookings />
+      {bookings.length > 0 && (
+        <div className='flex flex-col gap-2'>
+          <h2>Bookings</h2>
+          {bookings.map((booking) => (
+            <BookingCard booking={booking} key={booking.id} />
+          ))}
+        </div>
+      )}
       <BarberShops sort={BarberShopSort.Recommended} />
       <BarberShops sort={BarberShopSort.Popular} />
     </div>
   );
 }
 
-function HomeHeader() {
+async function HomeHeader() {
+  const session = await getServerSession(authOptions);
   return (
     <div>
-      <h2 className='text-xl font-bold'>Hello, Leonardo</h2>
-      <p>Segunda-feira, 24 de Março de 2026</p>
+      <h2 className='text-xl font-bold'>Hello{session?.user.name && `, ${session.user.name}`}</h2>
+      <p className='capitalize'>{new Date().toLocaleString('pt-BR', { dateStyle: 'full' })}</p>
     </div>
   );
 }
