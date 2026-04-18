@@ -23,6 +23,7 @@ import { createBooking, getBookingsByServiceAndDate } from '@/app/actions';
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
 import LoginDialog from './login-dialog';
+import BookingInfo from './booking-info';
 
 export default function BarberShopServiceItem({
   barberShop,
@@ -94,7 +95,7 @@ function ServiceBooking({
   const [date, setDate] = useState<Date>(new Date());
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [timeSlots, setTimeSlots] = useState<Date[]>([]);
-  const [book, setBook] = useState<Date | undefined>();
+  const [bookDate, setBookDate] = useState<Date | undefined>();
 
   async function fetchData(date: Date = new Date()) {
     const bookings = await getBookingsByServiceAndDate(service.id, date);
@@ -112,22 +113,22 @@ function ServiceBooking({
 
   function onSelectDate(date: Date) {
     setDate(date);
-    setBook(undefined);
+    setBookDate(undefined);
     fetchData(date);
   }
 
   function onSelectTime(time: Date) {
-    if (time.getTime() == book?.getTime()) {
-      setBook(undefined);
+    if (time.getTime() == bookDate?.getTime()) {
+      setBookDate(undefined);
     } else {
-      setBook(time);
+      setBookDate(time);
     }
   }
 
   async function confirmBooking() {
-    if (!book) return;
+    if (!bookDate) return;
     try {
-      const newBooking = await createBooking(service, book);
+      const newBooking = await createBooking(service, bookDate);
       if (newBooking) {
         setBookings([...bookings, newBooking]);
       }
@@ -147,7 +148,7 @@ function ServiceBooking({
       fetchData();
     } else {
       setDate(new Date());
-      setBook(undefined);
+      setBookDate(undefined);
     }
     setIsOpen(open);
   }
@@ -182,64 +183,24 @@ function ServiceBooking({
               {timeSlots.map((time) => (
                 <Button
                   key={time.toString()}
-                  variant={book?.getTime() === time.getTime() ? 'default' : 'outlineCustom'}
+                  variant={bookDate?.getTime() === time.getTime() ? 'default' : 'outlineCustom'}
                   onClick={() => onSelectTime(time)}>
                   {time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                 </Button>
               ))}
             </div>
-            {book && <BookingInfo barberShop={barberShop} service={service} book={book} />}
+            {bookDate && <BookingInfo barberShop={barberShop} service={service} date={bookDate} />}
           </div>
 
           <SheetFooter>
             <SheetClose asChild>
-              <Button disabled={!book} onClick={confirmBooking}>
-                {book ? 'Confirm Your Booking' : 'Select Time to Book'}
+              <Button disabled={!bookDate} onClick={confirmBooking}>
+                {bookDate ? 'Confirm Your Booking' : 'Select Time to Book'}
               </Button>
             </SheetClose>
           </SheetFooter>
         </SheetContent>
       )}
     </Sheet>
-  );
-}
-
-function BookingInfo({
-  barberShop,
-  service,
-  book,
-}: {
-  barberShop: BarberShop;
-  service: BarberShopService;
-  book: Date;
-}) {
-  return (
-    <Card>
-      <CardContent className='flex flex-col gap-2 [&>div]:flex [&>div]:justify-between [&>div:first-child]:font-bold [&>div:not(:first-child)>h2]:text-gray-400'>
-        <div>
-          <h2>{service.name}</h2>
-          <span>
-            {Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-              service.price,
-            )}
-          </span>
-        </div>
-
-        <div>
-          <h2>Date</h2>
-          <span>{book.toLocaleString('pt-BR', { dateStyle: 'full' })}</span>
-        </div>
-
-        <div>
-          <h2>Time</h2>
-          <span>{book.toLocaleString('pt-BR', { timeStyle: 'short' })}</span>
-        </div>
-
-        <div>
-          <h2>Barber Shop</h2>
-          <span>{barberShop.name}</span>
-        </div>
-      </CardContent>
-    </Card>
   );
 }

@@ -6,6 +6,7 @@ import { MapPinIcon, PhoneIcon, StarIcon } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import BarberShopServiceItem from '@/components/barber-shop-service-item';
 import CopyPhoneButton from '@/components/copy-phone-button';
+import BarberShopPhones from '@/components/barber-shop-phones';
 
 export default async function BarberShopPage({ params }: { params: { id: string } }) {
   const { id: barberShopId } = await params;
@@ -50,15 +51,7 @@ function BarberShopComponent({ barberShop }: { barberShop: BarberShopWithService
           <BarberShopServiceItem barberShop={barberShop} service={service} key={service.id} />
         ))}
         <Separator />
-        {barberShop.phones?.map((phone, index) => (
-          <div className='flex items-center justify-between' key={index}>
-            <div className='flex items-center gap-2'>
-              <PhoneIcon size={18} />
-              <p className='text-sm'>{phone}</p>
-            </div>
-            <CopyPhoneButton phone={phone} />
-          </div>
-        ))}
+        <BarberShopPhones phones={barberShop.phones} />
       </div>
     </div>
   );
