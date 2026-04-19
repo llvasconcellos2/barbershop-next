@@ -33,18 +33,13 @@ import {
 } from './ui/alert-dialog';
 import { toast } from 'sonner';
 import { deleteBooking } from '@/app/actions';
+import GoogleMap from './google-map';
 
 export default function BookingCard({ booking }: { booking: BookingWithServiceAndBarberShop }) {
   const [isOpen, setIsOpen] = useState(false);
   const isUpcoming = booking.date.getTime() > new Date().getTime();
 
   function handleSheetOpenChange(open: boolean) {
-    // if (open) {
-    //   fetchData();
-    // } else {
-    //   setDate(new Date());
-    //   setBook(undefined);
-    // }
     setIsOpen(open);
   }
 
@@ -86,6 +81,7 @@ export default function BookingCard({ booking }: { booking: BookingWithServiceAn
           </SheetHeader>
           <SheetDescription style={{ display: 'none' }}>Booking Info</SheetDescription>
           <div className='flex flex-col gap-4 p-5'>
+            <GoogleMap />
             <div className='relative flex h-45 items-end p-5'>
               <Image src='/map.png' alt='Barbershop Map' fill className='rounded-xl object-cover' />
               <Card className='z-50 w-full p-0'>
@@ -114,11 +110,7 @@ export default function BookingCard({ booking }: { booking: BookingWithServiceAn
             <BarberShopPhones phones={booking.barberShopService.barberShop.phones} />
           </div>
 
-          <SheetFooter>
-            {/* <SheetClose asChild> */}
-            {isUpcoming && <CancelBooking bookingId={booking.id} />}
-            {/* </SheetClose> */}
-          </SheetFooter>
+          <SheetFooter>{isUpcoming && <CancelBooking bookingId={booking.id} />}</SheetFooter>
         </SheetContent>
       )}
     </Sheet>
