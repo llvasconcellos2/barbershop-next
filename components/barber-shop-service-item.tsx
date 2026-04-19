@@ -180,14 +180,16 @@ function ServiceBooking({
                 weekday: { textTransform: 'capitalize' },
               }}></Calendar>
             <div className='flex gap-3 overflow-x-auto border-t border-solid pt-3 [&::-webkit-scrollbar]:hidden'>
-              {timeSlots.map((time) => (
-                <Button
-                  key={time.toString()}
-                  variant={bookDate?.getTime() === time.getTime() ? 'default' : 'outlineCustom'}
-                  onClick={() => onSelectTime(time)}>
-                  {time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                </Button>
-              ))}
+              {timeSlots.length > 0 ?
+                timeSlots.map((time) => (
+                  <Button
+                    key={time.toString()}
+                    variant={bookDate?.getTime() === time.getTime() ? 'default' : 'outlineCustom'}
+                    onClick={() => onSelectTime(time)}>
+                    {time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                  </Button>
+                ))
+              : <p>No available hours left for this date.</p>}
             </div>
             {bookDate && <BookingInfo barberShop={barberShop} service={service} date={bookDate} />}
           </div>
