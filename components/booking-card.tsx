@@ -20,6 +20,19 @@ import Image from 'next/image';
 import { Car } from 'lucide-react';
 import BookingInfo from './booking-info';
 import BarberShopPhones from './barber-shop-phones';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from './ui/alert-dialog';
+import { toast } from 'sonner';
+import { deleteBooking } from '@/app/actions';
 
 export default function BookingCard({ booking }: { booking: BookingWithServiceAndBarberShop }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -102,9 +115,9 @@ export default function BookingCard({ booking }: { booking: BookingWithServiceAn
           </div>
 
           <SheetFooter>
-            <SheetClose asChild>
-              <Button>Confirm Your Booking</Button>
-            </SheetClose>
+            {/* <SheetClose asChild> */}
+            {isUpcoming && <CancelBooking bookingId={booking.id} />}
+            {/* </SheetClose> */}
           </SheetFooter>
         </SheetContent>
       )}
@@ -118,5 +131,38 @@ function BarbershopAvatar({ url, name }: { url: string; name: string }) {
       <AvatarImage src={url} alt='Barber Avatar' />
       <AvatarFallback>{name.split(' ').map((value) => value.charAt(0))}</AvatarFallback>
     </Avatar>
+  );
+}
+
+function CancelBooking({ bookingId }: { bookingId: string }) {
+  async function handleCancelBooking() {
+    try {
+      await deleteBooking(bookingId);
+      toast.success('Booking canceled!');
+    } catch (error) {
+      console.log(error);
+      toast.error('Error canceling booking. Try again.');
+    }
+  }
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant='destructive'>Cancel Your Booking</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Cancel Your Booking?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. Your reservation will be permanently canceled.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter className='flex flex-row gap-3'>
+          <AlertDialogCancel className='flex-1'>Cancel</AlertDialogCancel>
+          <AlertDialogAction className='flex-1' variant='destructive' onClick={handleCancelBooking}>
+            Continue
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
