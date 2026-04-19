@@ -37,7 +37,9 @@ async function HomeHeader() {
   const session = await getServerSession(authOptions);
   return (
     <div>
-      <h2 className='text-xl font-bold'>Hello{session?.user.name && `, ${session.user.name}`}</h2>
+      <h2 className='text-xl font-bold'>
+        {session?.user.name ? `Hello, ${session.user.name}` : 'Welcome'}
+      </h2>
       <p className='capitalize'>{new Date().toLocaleString('pt-BR', { dateStyle: 'full' })}</p>
     </div>
   );
