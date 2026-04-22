@@ -6,8 +6,8 @@ export default function BookingInfo({
   service,
   date: date,
 }: {
-  barberShop: BarberShop;
-  service: BarberShopService;
+  barberShop: Pick<BarberShop, 'name'>;
+  service: Pick<BarberShopService, 'name' | 'price'>;
   date: Date;
 }) {
   return (
