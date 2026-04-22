@@ -1,5 +1,5 @@
 import { Card, CardContent } from './ui/card';
-import { BarberShop, BarberShopService, Booking } from '@/db/schema';
+import { BarberShop, BarberShopService } from '@/db/schema';
 
 export default function BookingInfo({
   barberShop,
