@@ -24,6 +24,7 @@ import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
 import LoginDialog from './login-dialog';
 import BookingInfo from './booking-info';
+import { useRouter } from 'next/navigation';
 
 export default function BarberShopServiceItem({
   barberShop,
@@ -91,6 +92,7 @@ function ServiceBooking({
   barberShop: BarberShop;
   service: BarberShopService;
 }) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [date, setDate] = useState<Date>(new Date());
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -132,7 +134,12 @@ function ServiceBooking({
       if (newBooking) {
         setBookings([...bookings, newBooking]);
       }
-      toast.success('Booking confirmed!');
+      toast.success('Booking confirmed!', {
+        action: {
+          label: 'Review Bookings',
+          onClick: () => router.push('/bookings'),
+        },
+      });
     } catch (error) {
       if (error instanceof Error) {
         console.error(error.message);
