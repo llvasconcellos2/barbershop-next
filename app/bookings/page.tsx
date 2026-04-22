@@ -1,8 +1,14 @@
 import Search from '@/components/search';
 import { getDoneUserBookings, getUpcomingUserBookings } from '@/app/actions';
 import BookingCard from '@/components/booking-card';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]/route';
+import { forbidden } from 'next/navigation';
 
 export default async function BarberShopsPage() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return forbidden();
+
   const [upcomingBookings, doneBookings] = await Promise.all([
     getUpcomingUserBookings(),
     getDoneUserBookings(),
@@ -26,6 +32,10 @@ export default async function BarberShopsPage() {
             <BookingCard booking={booking} key={booking.id} />
           ))}
         </>
+      )}
+
+      {upcomingBookings.length === 0 && doneBookings.length === 0 && (
+        <p>No bookings scheduled yet.</p>
       )}
     </div>
   );
